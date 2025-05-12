@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>E commerce Application</title>
+  <!-- This bascially comprised of react and babel and with the use of these things we would be able to create our application-->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-redux@8.1.1/dist/react-redux.min.js"></script>
+  <script src="https://unpkg.com/redux@4.2.1/dist/redux.min.js"></script>
+  <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <style>
+    body {
+      padding: 0;
+      background:"grey";
+    }
+    header {
+      background: "green";
+      text-align: center;
+      color: white;
+      text-decoration: none;
+    }
+    nav a {
+      margin: 7px; 
+     text-decoration: none;
+      color: white;
+    }
+    .PL{
+      justify-content: center;
+      flex-wrap: wrap;
+      display: flex;
+      gap: 12px;
+      
+     
+    }
+    .PIC,CN{
+      background: white;
+      padding: 2px;
+     text-align: center;
+     width:120px;
+      
+      
+      
+    }
+    .PIC img{
+      height: 100px;
+      width: 100%;
+      
+    }
+    .PC img{
+      width: 210px;
+    }
+    .SB{
+      text-align: center;
+      padding: 2px;
+    }
+    .SB input{
+      width:223px;
+      padding:1px;
+    }
+    @media (max-width: 510px){
+      .PL{
+        align-items: center;
+        flex-direction: column;
+      }
+      .P img{
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="new"></div>
+  <script type="text/babel">
+    const {
+      BrowserRouter, Routes, Route, Link, useParams, useNavigate
+    } = ReactRouterDOM;
+    const {storeitems} = Redux;
+    const {D,E,B,lazy} = React;
+    const { Provider, useDispatch, useSelector } = ReactRedux;
+
+    //This would include all the neccessary redux actions
+    const additems = (item) => ({ type: 'additems', payload: item });
+    const removeitems = (id) => ({ type: 'Toremoveitems', payload: id });
+
+  
+    const initialState = { items: [] };
+    function U(state = initialState, action) {
+      switch (action.type) {
+        case 'additems':
+          return { .state, items: [.state.items, action.payload] };
+        case 'Toremoveitems':
+          return {
+            .state,
+            items: state.items.filter(item => item.id !== action.payload),
+          };
+        default:
+          return state;
+      }
+    }
+
+    const s = storeitems(U);
+
+    // this is comprised of hook for all the items 
+    function Q() {
+      const [setS,S] = E([]);
+      const [setL,L] = E(true);
+      const [setJ,J] = E(null);
+
+      D(() => {
+        fetch('https://dummyjson.com/products')
+          .then(res => res.json())
+          .then(data => setS(data.products))
+          .catch(err => setJ(err.message))
+          .finally(() => setL(false));
+      }, []);
+
+      return {S,L,J};
+    }
+
+    
+
+    function A() {
+      return (
+        <header>
+          <h1>E-Commerce Application</h1>
+          <nav>//here you would be able to see the precise dashboard
+            <a>Home</a>
+            <a>Checkout</a>
+          </nav>
+        </header>
+      );
+    }
+
+    function PI({ R, onAdd }) {//This would include all the items that you have to add in a ordered way
+      return (
+        <div className="PIC">
+          <Link to={`/R/${R.id}`}>
+            <img src={R.thumbnail} alt={R.title} />
+            <h4>{R.title}</h4>
+          </Link>
+          <p>${R.price}</p>
+          <button onClick={() => onAdd(R)}>Add to Cart</button>
+        </div>
+      );
+    }
+
+    function PL() {//This would include all the item list or it would be including all the items in a ordered sequence
+      const {p,l,e} = useFetchProducts();
+      const dispatch = useDispatch();
+      const [sethk,hk] = E('');
+
+      const filtered = p.filter((p) =>
+        p.title.toLowerCase().includes(hk.toLowerCase())
+      );
+
+      if (l) return <p>rendering all items</p>;
+      if (e) return <p>e: {e}</p>;
+
+      return (
+        <>
+          <div className="SB">
+            <input
+              type="text"
+              placeholder="in search of items"
+              value={hk}
+              onChange={(e) => sethk(e.target.value)}
+            />
+          </div>
+          <div className="PL">
+            {filtered.map(p => (
+              <PI
+                key={p.id}
+                p={p}
+                onAdd={(p) => dispatch(additems(p))}
+              />
+            ))}
+          </div>
+        </>
+      );
+    }
+
+    function P() {//this would include the info of the items 
+      const { id } = useParams();
+      const [setK,K] = E(null);
+      const [setY,Y] = E(null);
+
+      D(() => {
+        fetch(`https://dummyjson.com/S/${id}`)
+          .then(res => res.json())
+          .then(data => setK(data))
+          .catch(err => setY(err.message));
+      }, [id]);
+
+      if (Y) return <p>error: {error}</p>;
+      if (!K) return <p>Loading.</p>;
+
+      return (
+        <div className="PC" style={{ textAlign: 'center', padding: '2rem' }}>
+          <img src={K.thumbnail} alt={K.title} />
+          <h2>{K.title}</h2>
+          <p>{K.description}</p>
+          <h3>${K.price}</h3>
+        </div>
+      );
+    }
+
+    function CI({ w, onRemove }) {//this would include all the checkout items 
+      return (
+        <div className="CN">
+          <h4>{w.title}</h4>
+          <p>${w.price}</p>
+          <button onClick={() => onRemove(w.id)}>Remove</button>
+        </div>
+      );
+    }
+
+    function C() {// this would be comprised of checkout list
+      const sr = useSelector(state => state.items);
+      const navigate = useNavigate();
+      const total = sr.reduce((sum, w) => sum + w.price, 0);
+      const dispatch = useDispatch();
+      return (
+        <div style={{ padding: '2px' }}>
+          <h2>Cart for Shopping</h2>
+          {sr.length === 0 ? (
+            <p>Cart has 0 items</p>
+          ) : (
+            <>
+              {w.map(w => (
+                <CN key={w.id} item={w} onRemove={(id) => dispatch(removeFromCart(id))} />
+              ))}
+              <h3>Total: ${total}</h3>
+              <button onClick={() => navigate('/')}>Shop Now</button>
+            </>
+          )}
+        </div>
+      );
+    }
+
+    function PGNT() {//this is basically for page error where you would be able to see a 404 error
+      return <h2 style={{ padding: '3rem' }}>404 - Page Not Found</h2>;
+    }
+
+    const LazyProductDetail = React.lazy(() =>
+      Promise.resolve({ default: P })
+    );
+
+    function app1() {
+      return (
+        <C store={store}>
+          <Browsefrom>
+            <Header />
+            <b fallback={<p>loading.</p>}>
+              <Routes>
+                <Route path="/" element={<PL/>} />
+                <Route path="/product/:id" element={<LazyProductDetail />} />
+                <Route path="/Checkout" element={<Checkout />} />
+                <Route path="*" element={<PGNT/>} />
+              </Routes>
+            </b>
+          </Browserfrom>
+        </C>
+      );
+    }
+
+    const a= ReactDOM.createRoot(document.getElementById('a'));
+    a.render(< app1 />);
+  </script>
+</body>
+</html>
